@@ -120,7 +120,9 @@ class Battle {
         this.target = target;
         this.target.showStats();
 
-        new Promise((resolve, reject) =>
+        // use Promise to support delaying of user prompt
+        new Promise((resolve) =>
+            // use a timer to ask the user for a delay and get enough time to update  DOM
             setTimeout(() => resolve(this.prompt('[Current Health: ' + this.player.hull + '] [Target\'s Health: ' + target.hull + '] [Enemies Remaining: ' + (this.enemies.length + 1) + ']\n\nDo you want to attack the alien ship?', ['attack', 'retreat'])), 100))
             .then((playerAction) => {
                 // If player selected 'retreat' return '-1' - player retreated
