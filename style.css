@@ -55,20 +55,6 @@ align-items: center;
 
     
 }
-.playerStats{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solidblack;
-    width: 15vw;
-    height: 15vh;
-    text-align: center;
-    font-size: 1.5em;
-    box-shadow: 0px 0px 20px 10px white;
-    border-radius: 2%;
-
-
-}
 .enemyImage{
     border: 1px solidblack;
     width: 30vw;
@@ -82,7 +68,9 @@ align-items: center;
 
     
 }
-.enemyStats{
+
+#playerStats,
+#enemyStats {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -90,8 +78,8 @@ align-items: center;
     width: 15vw;
     height: 15vh;
     text-align: center;
-    font-family: 'Share Tech Mono', monospace;
     font-size: 1.5em;
     box-shadow: 0px 0px 20px 10px white;
-
+    border-radius: 2%;
+    font-family: 'Share Tech Mono', monospace;
 }
