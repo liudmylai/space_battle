@@ -18,7 +18,7 @@ Ship Properties:
  * **accuracy** is the chance between `0` and `1` that the ship will hit its target.
 
 ### 🚀 Bonuses 
-- [ ] The aliens send a random number of ships to attack Earth. 
+- [x] The aliens send a random number of ships to attack Earth. 
 - [ ] Scientists have developed a super targeting computer for your lasers. You now are asked which of the aliens you would like to hit with your lasers. 
 - [ ] Scientists have improved your ship's shields. They don't work that consistently, and only improve your hit points by a random number each time 
 - [ ] Scientists have put missiles on your ship. You only have a limited number of them, but they do a lot of damage. You can say before each battle if you want to use one of your missles. 

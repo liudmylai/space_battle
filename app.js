@@ -22,7 +22,7 @@ class SpaceShip {
     /**
      * Show ship's stats
      */
-     showStats() {
+    showStats() {
         document.getElementById(this.statsId).innerHTML = `Hull : ${this.hull}<br>FirePower : ${this.firepower}<br>Accuracy : ${this.accuracy}`;
     }
 }
@@ -65,10 +65,13 @@ class Alien extends SpaceShip {
         this.statsId = 'enemyStats';
     }
     /**
-     * @param {number} numAlienShips
+     * Generate random number of ships to attack Earth
+     * @param {number} min
+     * @param {number} max
      * @return {Alien[]} Array of 'Alien' objects
      */
-    static createArmada(numAlienShips) {
+    static createArmada(min, max) {
+        const numAlienShips = min + Math.round((max - min) * Math.random());
         const armada = [];
         for (let i = 0; i < numAlienShips; i++) {
             armada.push(new Alien(`Alien#${i + 1}`))
@@ -128,7 +131,7 @@ class Battle {
                 // If player selected 'retreat' return '-1' - player retreated
                 if (playerAction === 'retreat' || playerAction === null) {
                     return -1;
-                // If player selected 'attack' then call 'nextRound()' recursively and check if either the target or the player is destroyed
+                    // If player selected 'attack' then call 'nextRound()' recursively and check if either the target or the player is destroyed
                 } else if (this.nextRound()) {
                     // if target is destroyed, then switch to next target recursively
                     // If no target left, then return 1 - player won
@@ -167,12 +170,13 @@ class Battle {
             return this.nextRound();
         }
     }
+
 }
 
 window.addEventListener('load', function () {
     // Start Game
     const player = new USS('USS Schwarzenegger');
-    const enemies = Alien.createArmada(6);
+    const enemies = Alien.createArmada(6, 10);
     const battle = new Battle(player, enemies);
     battle.startBattle();
 
