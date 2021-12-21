@@ -86,6 +86,7 @@ class Battle {
         this.player = player;
         this.enemies = enemies;
         this.round = 0;
+        this.status = 'inProgress';
     }
 
     // static function to log into console
@@ -110,13 +111,17 @@ class Battle {
             input = prompt(message, options.join('/'));
             if (input === null) {
                 return null;
-            } else if (options.toString().includes(input.toLowerCase())) {
+            } else if (options.includes(input.toLowerCase())) {
                 return input.toLowerCase();
             }
         } while (input !== null)
     }
     startBattle() {
-        return this.nextTarget(this.enemies.pop());
+        // Ask the player to choose the target
+        const targetIndex = this.prompt(`The aliens send ${this.enemies.length} ships to attack Earth` + '\n' + this.enemies.map((enemy, index) => `[${index + 1}] ${enemy.name} (H: ${enemy.hull}, F: ${enemy.firepower}, A: ${enemy.accuracy})` + (((index + 1) % 2 !== 0) ? '      ' : '\n')).join('') + '\n\nChoose the target', this.enemies.map((enemy, index) => `${index + 1}`));
+
+        // Get the chosen target to start the battle
+        return this.nextTarget(this.enemies.splice(Number(targetIndex) - 1, 1)[0]);
     }
     nextTarget(target) {
 
@@ -130,31 +135,38 @@ class Battle {
             .then((playerAction) => {
                 // If player selected 'retreat' return '-1' - player retreated
                 if (playerAction === 'retreat' || playerAction === null) {
-                    return -1;
+                    this.status = 'playerRetreat';
                     // If player selected 'attack' then call 'nextRound()' recursively and check if either the target or the player is destroyed
                 } else if (this.nextRound()) {
                     // if target is destroyed, then switch to next target recursively
-                    // If no target left, then return 1 - player won
+                    // If no target left, then player won
                     Battle.log(`${target.name} is DESTROYED!`)
-                    return (this.enemies.length > 0) ? this.nextTarget(this.enemies.pop()) : 1;
+                    if (this.enemies.length > 0) {
+                        this.nextTarget(this.enemies.pop());
+                    } else {
+                        this.status = 'playerWon';
+                    }
                 } else {
-                    // if player ship is destroyed, then return '0' - player lose
-                    return 0;
+                    // if player ship is destroyed, then player lose
+                    this.status = 'playerLose';
                 }
-            })
-            // Process battle result if it was set on the previous step
-            .then((result) => {
-                switch (result) {
-                    case 1:
+                switch (this.status) {
+                    case 'playerWon':
                         Battle.alert(`:::[ ${this.player.name} WON ]:::`);
                         break;
-                    case 0:
+                    case 'playerLose':
                         Battle.alert(`:::[ GAME OVER ]:::`);
                         break;
-                    case -1:
+                    case 'playerRetreat':
                         Battle.alert(`${this.player.name} retreat! ===> :::[ GAME OVER ]:::`);
                         break;
+                    default:
+                        return;
                 }
+                if (confirm("Do you want to start a new game?")) {
+                    startGame();
+                }
+            
             })
     }
     nextRound() {
@@ -173,13 +185,12 @@ class Battle {
 
 }
 
-window.addEventListener('load', function () {
-    // Start Game
+// Start Game
+function startGame() {
     const player = new USS('USS Schwarzenegger');
     const enemies = Alien.createArmada(6, 10);
     const battle = new Battle(player, enemies);
     battle.startBattle();
+}
 
-});
-
-
+window.addEventListener('load', startGame);

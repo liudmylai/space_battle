@@ -19,12 +19,12 @@ Ship Properties:
 
 ### 🚀 Bonuses 
 - [x] The aliens send a random number of ships to attack Earth. 
-- [ ] Scientists have developed a super targeting computer for your lasers. You now are asked which of the aliens you would like to hit with your lasers. 
+- [x] Scientists have developed a super targeting computer for your lasers. You now are asked which of the aliens you would like to hit with your lasers. 
 - [ ] Scientists have improved your ship's shields. They don't work that consistently, and only improve your hit points by a random number each time 
 - [ ] Scientists have put missiles on your ship. You only have a limited number of them, but they do a lot of damage. You can say before each battle if you want to use one of your missles. 
 - [ ] The aliens have gained emotions and now can attack more than one at a time. 
 - [ ] Evil alien scientists have created an alien mega-ship. This mega-ship contains a number of "weapon pods" that each have their own individual hit points. These "weapon-pods" must all be destroyed before you can begin doing damage to the main ship, which also has its own hit points.
-- [ ] When the game is over, prompt the user if they would like to play again, and make it so the user can play again with all the values set back to default. 
+- [x] When the game is over, prompt the user if they would like to play again, and make it so the user can play again with all the values set back to default. 
 - [ ] So far the entire game is just one battle, with many aliens. implement a game that consists of multiple battles where enemies respawn for a new battle at the end of the old battle. Keep track of points for the number of wins the player has. 
 - [ ] After every battle you are asked if you want to return to base and recharge your shields. 
 - [ ] Make the players and enemies stronger after each battle 
