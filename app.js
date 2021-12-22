@@ -114,7 +114,7 @@ class Battle {
             } else if (options.includes(input.toLowerCase())) {
                 return input.toLowerCase();
             }
-        } while (input !== null)
+        } while (true)
     }
     startBattle() {
         // Ask the player to choose the target
@@ -144,6 +144,9 @@ class Battle {
                 this.status = (playerAction === 'retreat' || playerAction === null) ? 'playerRetreat' : this.fightTarget();
 
                 switch (this.status) {
+                    case 'nextTarget':
+                        this.nextTarget(this.enemies.pop());
+                        return;
                     case 'playerWon':
                         Battle.alert(`:::[ ${this.player.name} WON ]:::`);
                         break;
@@ -171,9 +174,10 @@ class Battle {
             if (this.player.attack(this.target) <= 0) {
                 // if target is destroyed, then switch to the next target
                 // If no target left, then player won
-                Battle.log(`${target.name} is DESTROYED!`)
+                Battle.log(`${this.target.name} is DESTROYED!`)
                 if (this.enemies.length > 0) {
-                    this.nextTarget(this.enemies.pop());
+                    // this.nextTarget(this.enemies.pop());
+                    return 'nextTarget'
                 } else {
                     return 'playerWon';
                 }
