@@ -4,27 +4,13 @@ class SpaceShip {
     constructor(name) {
         this.name = name;
     }
-    /**
-     * Attack the enemy
-     * @param {obj} enemy
-     * @return {number} enemy hull
-     */
-    attack(enemy) {
-        if (Math.random() < this.accuracy) {
-            enemy.hull -= this.firepower;
-            enemy.showStats();
-            Battle.log(`${this.name} hit ${enemy.name} [${this.firepower}]`)
-        } else {
-            Battle.log(`${this.name} missed`)
-        }
-        return enemy.hull;
-    }
+
     /**
      * Show ship's stats
      */
     showStats() {
         document.getElementById(this.nameId).innerHTML = `${this.name}`;
-        document.getElementById(this.statsId).innerHTML = `Hull : ${this.hull}<br>FirePower : ${this.firepower}<br>Accuracy : ${this.accuracy}`;
+        document.getElementById(this.statsId).innerHTML = `Hull : ${this.hull}${(this.shield)?'('+ this.shield +')':''}<br>FirePower : ${this.firepower}<br>Accuracy : ${this.accuracy}`;
     }
 }
 
@@ -35,17 +21,34 @@ class USS extends SpaceShip {
      *  - hull      : 20
      *  - firepower : 5
      *  - accuracy  : 0.7
+     *  - shield    : 5
      * @param {string} name
      * @return {USS}
      */
     constructor(name) {
         super(name);
         this.hull = 20;
+        this.shield = 5;
         this.firepower = 5;
         this.accuracy = 0.7;
         this.nameId = 'playerName';
         this.statsId = 'playerStats';
         this.showStats();
+    }
+    /**
+     * Attack the alien
+     * @param {obj} alien
+     * @return {number} alien hull
+     */
+    attack(alien) {
+        if (Math.random() < this.accuracy) {
+            alien.hull -= this.firepower;
+            alien.showStats();
+            Battle.log(`${this.name} hit ${alien.name} [${this.firepower}]`)
+        } else {
+            Battle.log(`${this.name} missed`)
+        }
+        return alien.hull;
     }
 }
 
@@ -66,6 +69,26 @@ class Alien extends SpaceShip {
         this.accuracy = 0.6 + Math.round((0.8 - 0.6) * Math.random() * 10) / 10;
         this.nameId = 'enemyName';
         this.statsId = 'enemyStats';
+    }
+    /**
+     * Attack the player
+     * @param {obj} player
+     * @return {number} player's ship hull
+     */
+    attack(player) {
+        if (Math.random() < this.accuracy) {
+            // calculate absorbed damage
+            const absorb = Math.round(Math.min(this.firepower, player.shield) * Math.random());
+            // decrease player's hull
+            player.hull -= (this.firepower - absorb);
+            // decrease player's shield 
+            player.shield -= absorb;
+            player.showStats();
+            Battle.log(`${this.name} hit ${player.name} [${this.firepower}], shield absorbed [${absorb}]`);
+        } else {
+            Battle.log(`${this.name} missed`);
+        }
+        return player.hull;
     }
     /**
      * Generate random number of ships to attack Earth
@@ -188,7 +211,7 @@ class Battle {
                 } else {
                     return 'playerWon';
                 }
-            // target attacks, check if player's ship is destroyed
+                // target attacks, check if player's ship is destroyed
             } else if (this.target.attack(this.player) <= 0) {
                 // if player ship is destroyed, then player lose
                 return 'playerLose';
