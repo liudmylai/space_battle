@@ -23,6 +23,7 @@ class SpaceShip {
      * Show ship's stats
      */
     showStats() {
+        document.getElementById(this.nameId).innerHTML = `${this.name}`;
         document.getElementById(this.statsId).innerHTML = `Hull : ${this.hull}<br>FirePower : ${this.firepower}<br>Accuracy : ${this.accuracy}`;
     }
 }
@@ -42,6 +43,7 @@ class USS extends SpaceShip {
         this.hull = 20;
         this.firepower = 5;
         this.accuracy = 0.7;
+        this.nameId = 'playerName';
         this.statsId = 'playerStats';
         this.showStats();
     }
@@ -62,6 +64,7 @@ class Alien extends SpaceShip {
         this.hull = 3 + Math.round((6 - 3) * Math.random());
         this.firepower = 2 + Math.round((4 - 2) * Math.random());
         this.accuracy = 0.6 + Math.round((0.8 - 0.6) * Math.random() * 10) / 10;
+        this.nameId = 'enemyName';
         this.statsId = 'enemyStats';
     }
     /**
@@ -160,7 +163,7 @@ class Battle {
                         return;
                 }
                 if (confirm("Do you want to start a new game?")) {
-                    startGame();
+                    startNewGame();
                 }
 
             })
@@ -190,12 +193,17 @@ class Battle {
     }
 }
 
-// Start Game
-function startGame() {
+// Start New Game
+function startNewGame() {
     const player = new USS('USS Schwarzenegger');
+    startNewBattle(player);
+}
+
+// Start New Battle
+function startNewBattle(player) {
     const enemies = Alien.createArmada(6, 10);
     const battle = new Battle(player, enemies);
     battle.startBattle();
 }
 
-window.addEventListener('load', startGame);
+window.addEventListener('load', startNewGame);
