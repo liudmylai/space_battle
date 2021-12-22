@@ -21,14 +21,14 @@ class USS extends SpaceShip {
      *  - hull      : 20
      *  - firepower : 5
      *  - accuracy  : 0.7
-     *  - shield    : 5
+     *  - shield    : 10
      * @param {string} name
      * @return {USS}
      */
     constructor(name) {
         super(name);
         this.hull = 20;
-        this.shield = 5;
+        this.shield = 10;
         this.firepower = 5;
         this.accuracy = 0.7;
         this.nameId = 'playerName';
@@ -143,19 +143,6 @@ class Battle {
         } while (true)
     }
     startBattle() {
-/*        // Ask the player to choose the target
-        const targetIndex =
-            this.prompt(`The aliens send ${this.enemies.length} ships to attack Earth` + '\n'
-                + this.enemies
-                    .map((enemy, index) => `[${index + 1}] ${enemy.name} (H: ${enemy.hull}, F: ${enemy.firepower}, A: ${enemy.accuracy})` + (((index + 1) % 2 !== 0) ? '      ' : '\n'))
-                    .join('')
-                + '\n\nChoose the target'
-                , this.enemies.map((enemy, index) => `${index + 1}`));
-
-        // Get the chosen target to start the battle
-        return this.nextTarget(this.enemies.splice(Number(targetIndex) - 1, 1)[0]);
-*/
-
         // Ask the player to choose the target
         new Promise((resolve) =>
             setTimeout(() => 
@@ -194,7 +181,7 @@ class Battle {
                         Battle.alert(`:::[ ${this.player.name} WON ]:::`);
                         if (confirm('Another horde of alien ships is coming!\n\nAre you ready for the next battle?')) {
                             if (confirm('Do you want to return to base and recharge your shields?')){
-                                this.player.shield = 5;
+                                this.player.shield = 10;
                                 this.player.showStats();
                             }
                             startNewBattle(this.player);
@@ -232,11 +219,30 @@ class Battle {
                 } else {
                     return 'playerWon';
                 }
-                // target attacks, check if player's ship is destroyed
+            // target attacks, check if player's ship is destroyed
             } else if (this.target.attack(this.player) <= 0) {
                 // if player ship is destroyed, then player lose
                 return 'playerLose';
             }
+
+            // aliens can attack more than one at a time
+            this.enemies
+                // put each element in the array in an object, and give it a random key
+                .map((value) => ({ value, rand: Math.random() }))
+                // filter using the random key
+                .filter((enemy)=>enemy.rand < 0.1)
+                // unmap to get the original objects
+                .map(({ value }) => value)
+                // each of filtered aliens attacks
+                .forEach((attacker)=>{
+                    if (attacker.attack(this.player) <= 0) {
+                        // if player ship is destroyed, then player lose
+                        return 'playerLose';
+                    }
+                
+            })
+
+
         }
     }
 }
