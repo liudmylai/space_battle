@@ -143,7 +143,7 @@ class Battle {
         } while (true)
     }
     startBattle() {
-        // Ask the player to choose the target
+/*        // Ask the player to choose the target
         const targetIndex =
             this.prompt(`The aliens send ${this.enemies.length} ships to attack Earth` + '\n'
                 + this.enemies
@@ -154,6 +154,23 @@ class Battle {
 
         // Get the chosen target to start the battle
         return this.nextTarget(this.enemies.splice(Number(targetIndex) - 1, 1)[0]);
+*/
+
+        // Ask the player to choose the target
+        new Promise((resolve) =>
+            setTimeout(() => 
+                resolve(
+                    this.prompt(`The aliens send ${this.enemies.length} ships to attack Earth` + '\n'
+                        + this.enemies
+                            .map((enemy, index) => `[${index + 1}] ${enemy.name} (H: ${enemy.hull}, F: ${enemy.firepower}, A: ${enemy.accuracy})` + (((index + 1) % 2 !== 0) ? '      ' : '\n'))
+                            .join('')
+                        + '\n\nChoose the target'
+                        , this.enemies.map((enemy, index) => `${index + 1}`)
+                )
+            ), 100))
+        // Get the chosen target to start the battle
+        .then((targetIndex) => this.nextTarget(this.enemies.splice(Number(targetIndex) - 1, 1)[0]))
+
     }
     nextTarget(target) {
 
@@ -176,6 +193,10 @@ class Battle {
                     case 'playerWon':
                         Battle.alert(`:::[ ${this.player.name} WON ]:::`);
                         if (confirm('Another horde of alien ships is coming!\n\nAre you ready for the next battle?')) {
+                            if (confirm('Do you want to return to base and recharge your shields?')){
+                                this.player.shield = 5;
+                                this.player.showStats();
+                            }
                             startNewBattle(this.player);
                             return;
                         }

@@ -26,6 +26,6 @@ Ship Properties:
 - [ ] Evil alien scientists have created an alien mega-ship. This mega-ship contains a number of "weapon pods" that each have their own individual hit points. These "weapon-pods" must all be destroyed before you can begin doing damage to the main ship, which also has its own hit points.
 - [x] When the game is over, prompt the user if they would like to play again, and make it so the user can play again with all the values set back to default. 
 - [x] So far the entire game is just one battle, with many aliens. implement a game that consists of multiple battles where enemies respawn for a new battle at the end of the old battle. Keep track of points for the number of wins the player has. 
-- [ ] After every battle you are asked if you want to return to base and recharge your shields. 
+- [x] After every battle you are asked if you want to return to base and recharge your shields. 
 - [ ] Make the players and enemies stronger after each battle 
 - [ ] Distribute medals and power ups to the player depending on points
