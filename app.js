@@ -152,6 +152,10 @@ class Battle {
                         return;
                     case 'playerWon':
                         Battle.alert(`:::[ ${this.player.name} WON ]:::`);
+                        if (confirm('Another horde of alien ships is coming!\n\nAre you ready for the next battle?')) {
+                            startNewBattle(this.player);
+                            return;
+                        }
                         break;
                     case 'playerLose':
                         Battle.alert(`:::[ GAME OVER ]:::`);
