@@ -118,7 +118,13 @@ class Battle {
     }
     startBattle() {
         // Ask the player to choose the target
-        const targetIndex = this.prompt(`The aliens send ${this.enemies.length} ships to attack Earth` + '\n' + this.enemies.map((enemy, index) => `[${index + 1}] ${enemy.name} (H: ${enemy.hull}, F: ${enemy.firepower}, A: ${enemy.accuracy})` + (((index + 1) % 2 !== 0) ? '      ' : '\n')).join('') + '\n\nChoose the target', this.enemies.map((enemy, index) => `${index + 1}`));
+        const targetIndex =
+            this.prompt(`The aliens send ${this.enemies.length} ships to attack Earth` + '\n'
+                + this.enemies
+                    .map((enemy, index) => `[${index + 1}] ${enemy.name} (H: ${enemy.hull}, F: ${enemy.firepower}, A: ${enemy.accuracy})` + (((index + 1) % 2 !== 0) ? '      ' : '\n'))
+                    .join('')
+                + '\n\nChoose the target'
+                , this.enemies.map((enemy, index) => `${index + 1}`));
 
         // Get the chosen target to start the battle
         return this.nextTarget(this.enemies.splice(Number(targetIndex) - 1, 1)[0]);
@@ -133,23 +139,10 @@ class Battle {
             // use a timer to ask the user for a delay and get enough time to update  DOM
             setTimeout(() => resolve(this.prompt('[Current Health: ' + this.player.hull + '] [Target\'s Health: ' + target.hull + '] [Enemies Remaining: ' + (this.enemies.length + 1) + ']\n\nDo you want to attack the alien ship?', ['attack', 'retreat'])), 100))
             .then((playerAction) => {
-                // If player selected 'retreat' return '-1' - player retreated
-                if (playerAction === 'retreat' || playerAction === null) {
-                    this.status = 'playerRetreat';
-                    // If player selected 'attack' then call 'nextRound()' recursively and check if either the target or the player is destroyed
-                } else if (this.nextRound()) {
-                    // if target is destroyed, then switch to next target recursively
-                    // If no target left, then player won
-                    Battle.log(`${target.name} is DESTROYED!`)
-                    if (this.enemies.length > 0) {
-                        this.nextTarget(this.enemies.pop());
-                    } else {
-                        this.status = 'playerWon';
-                    }
-                } else {
-                    // if player ship is destroyed, then player lose
-                    this.status = 'playerLose';
-                }
+
+                // If player selected 'retreat' set status to 'playerRetreat' else fight the curren target 
+                this.status = (playerAction === 'retreat' || playerAction === null) ? 'playerRetreat' : this.fightTarget();
+
                 switch (this.status) {
                     case 'playerWon':
                         Battle.alert(`:::[ ${this.player.name} WON ]:::`);
@@ -166,23 +159,31 @@ class Battle {
                 if (confirm("Do you want to start a new game?")) {
                     startGame();
                 }
-            
+
             })
     }
-    nextRound() {
-        Battle.log(`:::[ ROUND ${++this.round} ]:::`);
-        // player attacks, return 'true' if target is destroyed
-        if (this.player.attack(this.target) <= 0) {
-            return true;
-            // target attacks, return 'false' if player's ship is destroyed
-        } else if (this.target.attack(this.player) <= 0) {
-            return false;
-            // otherwise play next round
-        } else {
-            return this.nextRound();
+    fightTarget() {
+        while (this.target.hull > 0) {
+
+            Battle.log(`:::[ ROUND ${++this.round} ]:::`);
+
+            // player attacks, check if target is destroyed
+            if (this.player.attack(this.target) <= 0) {
+                // if target is destroyed, then switch to the next target
+                // If no target left, then player won
+                Battle.log(`${target.name} is DESTROYED!`)
+                if (this.enemies.length > 0) {
+                    this.nextTarget(this.enemies.pop());
+                } else {
+                    return 'playerWon';
+                }
+            // target attacks, check if player's ship is destroyed
+            } else if (this.target.attack(this.player) <= 0) {
+                // if player ship is destroyed, then player lose
+                return 'playerLose';
+            }
         }
     }
-
 }
 
 // Start Game
